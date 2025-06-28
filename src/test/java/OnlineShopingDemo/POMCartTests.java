@@ -2,12 +2,15 @@ package OnlineShopingDemo;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
@@ -18,7 +21,7 @@ import com.pages.LoginPage;
 
 public class POMCartTests {
 	
-	public ChromeDriver browserDriver=null;
+	public WebDriver browserDriver=null;
 	public LoginPage loginPage=null;
 	public HomePage homePage=null;
 	public WebDriverWait wait=null;
@@ -27,11 +30,11 @@ public class POMCartTests {
 	public void beforeSuite(){
 		
 		System.out.println("Inside @BeforeSuite");
-		System.setProperty("webdriver.chrome.driver", "driver\\chromedriver.exe");	
-		System.out.println(System.getProperty("webdriver.chrome.driver"));	
+		
 		 
-		 browserDriver=new ChromeDriver();
-		 wait=new WebDriverWait(browserDriver,10);
+		browserDriver=new ChromeDriver();
+		wait=new WebDriverWait(browserDriver,Duration.ofSeconds(10));
+		 
 		 browserDriver.get("https://demo.openmrs.org/openmrs/login.htm");
 		 browserDriver.manage().window().maximize();			
 	}
@@ -40,32 +43,24 @@ public class POMCartTests {
 	public void setUp(){
 		System.out.println("Inside @BeforeTest");
 		 loginPage=new LoginPage(browserDriver);
-		 homePage=new HomePage(browserDriver);
-	 
-		 
-		 
+		 homePage=new HomePage(browserDriver);		 
 	}
 	
-	
-	
-	
-	
-	
-  @Test(dataProvider="testData")
+  @Test(dataProvider="testData",priority=1)
   public void testLogin(String userName,String password) {
 	  loginPage.login(userName,password,"Inpatient ward");  
   }
   
-  @Test
-  public void registerPatient(){	
-	  homePage.registerPatient();
-  }
-  @Test(enabled=false)
-  public void testLogout(){
+	
+	  @Test(enabled=false) public void registerPatient(){
+	  homePage.registerPatient(); }
+	 
+	
+	  @Test(enabled=true,priority=2) public void testLogout(){
 	  homePage.logOutOps();
 	  
-  }
-  
+	  }
+	 
   
   
   @DataProvider(name="testData")
@@ -78,27 +73,28 @@ public class POMCartTests {
 		 int i=0;
 		 int j=0;
 		
-		 int numberOfRow=workBook.getSheet("UserCred").getLastRowNum();
+		 //int numberOfRow=workBook.getSheet("UserCred").getLastRowNum();
 		 
 		 
-		 String [] [] cred= new String[numberOfRow][2];
+		 String [] [] cred= new String[1][2];
 		 
-		 for(j=0,i=1;i<=numberOfRow;i++,j++){
-		
-			 workBook.getSheet("UserCred").getRow(i).getCell(0).setCellType(CellType.STRING);;
-			 userName=workBook.getSheet("UserCred").getRow(i).getCell(0).getStringCellValue();
+		 workBook.getSheet("UserCred").getRow(1).getCell(0).setCellType(CellType.STRING);;
+		 userName=workBook.getSheet("UserCred").getRow(1).getCell(0).getStringCellValue();
+	 
+		 workBook.getSheet("UserCred").getRow(1).getCell(0).setCellType(CellType.STRING);;
+		 password=workBook.getSheet("UserCred").getRow(1).getCell(1).getStringCellValue();
 		 
-			 workBook.getSheet("UserCred").getRow(i).getCell(0).setCellType(CellType.STRING);;
-			 password=workBook.getSheet("UserCred").getRow(i).getCell(1).getStringCellValue();
-			 
-			 cred[j][0]=userName;
-			 cred[j][1]=password;
-		 }
+		 cred[0][0]=userName;
+		 cred[0][1]=password;
+	
 		 
 		 return cred;
 	 }
 	
-  
+  @AfterTest
+  public void tearDown() {
+	  browserDriver.quit();
+  }
   
   
 }

@@ -2,6 +2,7 @@ package com.pages;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +15,10 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -26,6 +29,7 @@ public class BasePage {
 
 	public WebDriver chromeDriver=null;
 	public WebDriverWait wait=null;
+//RemoteWebDriver rm=new ChromeDriver();
 	
 	//Used for Mouse Operation
 	public Actions actions=null;
@@ -78,7 +82,7 @@ public class BasePage {
 			
 		//Alert operation
 
-			//Click on Yes on Alert
+			//Click on Yes on Alert(Accet)
 			public void acceptAlert(){
 			    //Switch to alert
 				alert=chromeDriver.switchTo().alert();
@@ -227,20 +231,20 @@ public class BasePage {
 		
 		
 		
-		//Exple of  Explicit Wait	
-		public void verifyPresenceOfElement(long time,String loc){
+		//Example of  Explicit Wait	
+		public void verifyPresenceOfElement(Duration time,String loc){
 			wait = new WebDriverWait(chromeDriver,time);
 			wait.until(ExpectedConditions.presenceOfElementLocated(By.id(loc)));
 		}
 		
-		public void presenceOfElement(long time,String loc){
+		public void presenceOfElement(Duration time,String loc){
 			wait = new WebDriverWait(chromeDriver,time);
 			wait.until(ExpectedConditions.presenceOfElementLocated(By.id("")));
 		}
 		
 		////Verify the visibility of the element by using the Explicit Wait
 		public void visibilityOfElement(WebElement wb){
-			wait = new WebDriverWait(chromeDriver,10);
+			wait = new WebDriverWait(chromeDriver,Duration.ofSeconds(10));
 			wait.until(ExpectedConditions.visibilityOf(wb));
 		}
 		
